@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
-	
+
 	"github.com/HabibovUlugbek/go-file-encryption/filecrypt"
 	"golang.org/x/term"
 )
@@ -60,13 +60,13 @@ func encryptHandle() {
 
 	password := getPassword()
 	fmt.Println("\nEncrypting file...")
-	filecrypto.EncryptFile(file, password)
+	filecrypt.EncryptFile(file, password)
 	fmt.Println("\nFile encrypted successfully")
 
 }
 
 func decryptHandle() {
-if len(os.Args) < 3 {
+	if len(os.Args) < 3 {
 		fmt.Println("Please provide a file to encrypt")
 		os.Exit(0)
 	}
@@ -77,20 +77,20 @@ if len(os.Args) < 3 {
 		panic("File does not exist")
 	}
 	fmt.Println("Please enter a password")
-	password , _ : =term.ReadPassword(0)
+	password, _ := term.ReadPassword(0)
 
 	fmt.Println("\nDecrypting file...")
-	filecrypto.DecryptFile(file, password)
+	filecrypt.DecryptFile(file, password)
 
 	fmt.Println("\nFile decrypted successfully")
 }
 
 func getPassword() []byte {
 	fmt.Println("Please enter a password")
-	password , _ : =term.ReadPassword(0)
+	password, _ := term.ReadPassword(0)
 
 	fmt.Println("Please confirm your password")
-	confirmPassword , _ : =term.ReadPassword(0)
+	confirmPassword, _ := term.ReadPassword(0)
 
 	if !validatePassword(password, confirmPassword) {
 		fmt.Println("\nPasswords do not match")
@@ -100,8 +100,8 @@ func getPassword() []byte {
 	return password
 }
 
-func validatePassword(password :[]byte,confirmPassword: [byte]) bool {
-	if(!bytes.Equal(password,confirmPassword)){
+func validatePassword(password []byte, confirmPassword []byte) bool {
+	if !bytes.Equal(password, confirmPassword) {
 		return false
 	}
 	return true

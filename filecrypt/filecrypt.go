@@ -13,36 +13,36 @@ import (
 )
 
 func EncryptFile(file string, password []byte) {
-	if _ , err : =os.Stat(file); os.IsNotExist(err) {
+	if _, err := os.Stat(file); os.IsNotExist(err) {
 		panic(err.Error())
 	}
 
-	srcFile , err := os.Open(file)
+	srcFile, err := os.Open(file)
 	if err != nil {
 		panic(err.Error())
 	}
 
 	defer srcFile.Close()
 
-	plainText, err : = io.ReadAll(srcFile)
+	plainText, err := io.ReadAll(srcFile)
 	if err != nil {
 		panic(err.Error())
 	}
-	key:=password
+	key := password
 
-	nonce: = make([]byte, 12)
-	if _ ,err : = io.ReadFull(rand.Reader, nonce); err != nil {
+	nonce := make([]byte, 12)
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
 		panic(err.Error())
 	}
 
-	dk : = pbkdf2.Key(key, nonce, 4096, 32, sha1.New)
+	dk := pbkdf2.Key(key, nonce, 4096, 32, sha1.New)
 
-	block , err : = aes.NewCipher(dk)
+	block, err := aes.NewCipher(dk)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	aesgcm , err : = cipher.NewGCM(block)
+	aesgcm, err := cipher.NewGCM(block)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -50,7 +50,7 @@ func EncryptFile(file string, password []byte) {
 	cipherText := aesgcm.Seal(nil, nonce, plainText, nil)
 	cipherText = append(cipherText, nonce...)
 
-	dstFile , err : = os.Create(file)
+	dstFile, err := os.Create(file)
 
 	if err != nil {
 		panic(err.Error())
@@ -58,46 +58,46 @@ func EncryptFile(file string, password []byte) {
 
 	defer dstFile.Close()
 
-	_, err  := dstFile.Write(cipherText)
-	if err != nil {
-		panic(err.Error())
+	_, error := dstFile.Write(cipherText)
+	if error != nil {
+		panic(error.Error())
 	}
 }
 
 func DecryptFile(file string, password []byte) {
-	if _ , err : =os.Stat(file); os.IsExist(err) {
+	if _, err := os.Stat(file); os.IsExist(err) {
 		panic(err.Error())
 	}
 
-	srcFile , err := os.Open(file)
+	srcFile, err := os.Open(file)
 	if err != nil {
 		panic(err.Error())
 	}
 
 	defer srcFile.Close()
 
-	cipherText, err : = io.ReadAll(srcFile)
+	cipherText, err := io.ReadAll(srcFile)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	key:=password
-	salt:=cipherText[len(cipherText)-12:]
-	str:= hex.EncodeToString(salt)
-	nonce ,err : = hex.DecodeString(str)
+	key := password
+	salt := cipherText[len(cipherText)-12:]
+	str := hex.EncodeToString(salt)
+	nonce, err := hex.DecodeString(str)
 
-	dk : = pbkdf2.Key(key, nonce, 4096, 32, sha1.New)
+	dk := pbkdf2.Key(key, nonce, 4096, 32, sha1.New)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	block , err : = aes.NewCipher(dk)
+	block, err := aes.NewCipher(dk)
 
 	if err != nil {
 		panic(err.Error())
 	}
 
-	aesgcm , err : = cipher.NewGCM(block)
+	aesgcm, err := cipher.NewGCM(block)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -107,7 +107,7 @@ func DecryptFile(file string, password []byte) {
 		panic(err.Error())
 	}
 
-	dstFile , err : = os.Create(file)
+	dstFile, err := os.Create(file)
 
 	if err != nil {
 		panic(err.Error())
@@ -115,9 +115,9 @@ func DecryptFile(file string, password []byte) {
 
 	defer dstFile.Close()
 
-	_, err  := dstFile.Write(plainText)
-	if err != nil {
-		panic(err.Error())
+	_, error := dstFile.Write(plainText)
+	if error != nil {
+		panic(error.Error())
 	}
-	
+
 }
