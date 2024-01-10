@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	
+	"gitub.com/HabibovUlugbek/go-file-encryption/filecrypto"
+	"golang.org/x/term"
 )
 
 func main() {
@@ -56,11 +59,30 @@ func encryptHandle() {
 	}
 
 	password := getPassword()
-	fmt.Println("Encrypting file...")
+	fmt.Println("\nEncrypting file...")
+	filecrypto.EncryptFile(file, password)
+	fmt.Println("\nFile encrypted successfully")
+
 }
 
 func decryptHandle() {
+if len(os.Args) < 3 {
+		fmt.Println("Please provide a file to encrypt")
+		os.Exit(0)
+	}
 
+	file := os.Args[2]
+
+	if !validateFile(file) {
+		panic("File does not exist")
+	}
+	fmt.Println("Please enter a password")
+	password , _ : =term.ReadPassword(0)
+
+	fmt.Println("\nDecrypting file...")
+	filecrypto.DecryptFile(file, password)
+
+	fmt.Println("\nFile decrypted successfully")
 }
 
 func getPassword() []byte {
